@@ -1,0 +1,23 @@
+[project]
+name = "311-agent"
+version = "0.1.0"
+description = "LangGraph orchestrator for routing 311 tickets with MCP tools."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain-mcp-adapters>=0.1.0",
+    "langchain-openai>=0.3.0",
+    "langgraph>=0.2.0",
+    "pydantic>=2.7.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.scripts]
+classify-311 = "agent311.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
