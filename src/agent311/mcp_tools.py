@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
@@ -14,16 +15,20 @@ async def load_mcp_tools(
     *,
     mcp_url: str,
     mcp_transport: str,
-    classification_tool_name: str | None,
+    classification_tool_name: str | None = None,
+    required_tool_name: str | None = None,
+    server_name: str = "department_classifier",
 ):
-    logger.info("Connecting to MCP server: url=%s transport=%s", mcp_url, mcp_transport)
-    mcp_client = MultiServerMCPClient(
-        {
-            "department_classifier": {
-                "url": mcp_url,
-                "transport": mcp_transport,
-            }
+    required_name = required_tool_name if required_tool_name is not None else classification_tool_name
+    logger.info("Connecting to MCP server: name=%s url=%s transport=%s", server_name, mcp_url, mcp_transport)
+    connections: dict[str, Any] = {
+        server_name: {
+            "url": mcp_url,
+            "transport": mcp_transport,
         }
+    }
+    mcp_client = MultiServerMCPClient(
+        connections
     )
 
     try:
@@ -35,33 +40,33 @@ async def load_mcp_tools(
     validate_mcp_tools(
         tools=tools,
         mcp_url=mcp_url,
-        classification_tool_name=classification_tool_name,
+        required_tool_name=required_name,
     )
     logger.info("Discovered MCP tool(s): %s", ", ".join(tool.name for tool in tools))
     return tools
 
 
-def validate_mcp_tools(*, tools, mcp_url: str, classification_tool_name: str | None) -> None:
+def validate_mcp_tools(*, tools, mcp_url: str, required_tool_name: str | None) -> None:
     if not tools:
         logger.error("No MCP tools were discovered at %s", mcp_url)
         raise RuntimeError(f"No MCP tools were discovered at {mcp_url}.")
 
-    if not classification_tool_name:
-        logger.info("No required classification tool name configured; accepting discovered MCP tools")
+    if not required_tool_name:
+        logger.info("No required MCP tool name configured; accepting discovered MCP tools")
         return
 
     tool_names = {tool.name for tool in tools}
-    if classification_tool_name in tool_names:
-        logger.info("Required MCP classification tool is available: %s", classification_tool_name)
+    if required_tool_name in tool_names:
+        logger.info("Required MCP tool is available: %s", required_tool_name)
         return
 
     available_tools = ", ".join(sorted(tool_names))
     logger.error(
-        "Required MCP classification tool is missing: required=%s available=%s",
-        classification_tool_name,
+        "Required MCP tool is missing: required=%s available=%s",
+        required_tool_name,
         available_tools or "none",
     )
     raise RuntimeError(
-        f"Required MCP classification tool '{classification_tool_name}' was not discovered. "
+        f"Required MCP tool '{required_tool_name}' was not discovered. "
         f"Available tools: {available_tools or 'none'}."
     )

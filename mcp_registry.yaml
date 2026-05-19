@@ -1,0 +1,4 @@
+departments:
+  Code Compliance:
+    url: localhost:8082
+    transport: streamable_http

@@ -71,6 +71,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--mcp-registry",
+        default=None,
+        help=(
+            "YAML registry of department MCP servers. "
+            f"Defaults to config value: {config.mcp_registry_path or './mcp_registry.yaml'}"
+        ),
+    )
+    parser.add_argument(
         "--log-level",
         default=None,
         choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
@@ -92,6 +100,7 @@ def main() -> None:
             mcp_transport=args.mcp_transport,
             model=args.model,
             classification_tool_name=args.classification_tool_name,
+            mcp_registry_path=args.mcp_registry,
             config_path=args.config,
         )
     )

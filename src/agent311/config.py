@@ -17,6 +17,7 @@ class AgentConfig(BaseModel):
     openai_api_key: str | None = None
     recursion_limit: int = Field(..., ge=1)
     classification_tool_name: str | None = None
+    mcp_registry_path: str | None = None
     log_level: str = "INFO"
 
 
@@ -44,6 +45,7 @@ def load_config(config_path: str | Path | None = None) -> AgentConfig:
         openai_api_key=(properties.get("OPENAI_API_KEY") or None),
         recursion_limit=int(properties.get("RECURSION_LIMIT", "12")),
         classification_tool_name=(properties.get("CLASSIFICATION_TOOL_NAME") or None),
+        mcp_registry_path=(properties.get("MCP_REGISTRY_PATH") or None),
         log_level=properties.get("LOG_LEVEL", "INFO"),
     )
 
