@@ -169,8 +169,10 @@ def ticket_creation_prompt(
         f"Internal ticket creation context: {internal_context_text}\n\n"
         "You must call the appropriate MCP ticket creation tool. Use the tool metadata, "
         "including tool descriptions and input parameters attached to the tool call, to populate valid fields. "
-        "Carefully inspect the input parameters to determine how status should be created. "
-        "Do not invent status values when the tool parameters define how status should be set. "
+        "Set the ticket status by combining the Internal ticket creation context with the status-related "
+        "metadata and input parameters exposed by the tool. Account for whether department ticket creation "
+        "was skipped, failed, or succeeded, and whether classification confidence is low. Do not invent "
+        "status values when the tool parameters define how status should be set. "
         "Return only JSON."
     )
 
