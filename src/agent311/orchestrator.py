@@ -122,21 +122,27 @@ class TicketRoutingAgent:
         department_mcp_server_found: bool,
     ) -> DepartmentDecision:
         logger.info("Creating internal 311 system ticket through primary MCP server")
+        internal_context = self._internal_ticket_context(
+            decision=decision,
+            department_mcp_server_found=department_mcp_server_found,
+        )
         internal_ticket_creation = await create_internal_ticket(
             ticket=ticket,
             decision=decision,
             department_ticket_creation=decision.ticket_creation,
-            internal_context=self._internal_ticket_context(
-                decision=decision,
-                department_mcp_server_found=department_mcp_server_found,
-            ),
+            internal_context=internal_context,
             mcp_url=self.mcp_url,
             mcp_transport=self.mcp_transport,
             model=self.model,
             openai_api_key=self.openai_api_key,
             recursion_limit=self.recursion_limit,
         )
-        return decision.model_copy(update={"internal_ticket_creation": internal_ticket_creation})
+        return decision.model_copy(
+            update={
+                "internal_ticket_creation": internal_ticket_creation,
+                "internal_ticket_context": internal_context,
+            }
+        )
 
     @staticmethod
     def _classification_confidence_low(decision: DepartmentDecision) -> bool:

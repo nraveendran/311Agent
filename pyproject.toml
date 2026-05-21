@@ -5,12 +5,14 @@ description = "LangGraph orchestrator for routing 311 tickets with MCP tools."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "fastapi>=0.115.0",
     "langchain-mcp-adapters>=0.1.0",
     "langchain-openai>=0.3.0",
     "langgraph>=0.2.0",
     "pydantic>=2.7.0",
     "PyYAML>=6.0.0",
     "python-dotenv>=1.0.0",
+    "uvicorn[standard]>=0.30.0",
 ]
 
 [project.scripts]

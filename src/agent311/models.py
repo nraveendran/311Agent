@@ -96,6 +96,10 @@ class DepartmentDecision(BaseModel):
         default=None,
         description="Internal 311 system ticket creation result from the primary MCP server.",
     )
+    internal_ticket_context: InternalTicketContext | None = Field(
+        default=None,
+        description="Deterministic context used while creating the internal 311 ticket.",
+    )
 
 
 class AgentState(TypedDict):
